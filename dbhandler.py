@@ -86,3 +86,18 @@ class dbInteraction:
         self.db_disconnect(conn, cursor)
 
         return True
+
+    def change_item(self, id, quantity):
+        conn, cursor = self.db_connect()
+        try:
+            cursor.execute(
+                "UPDATE item SET quantity = ? WHERE id = ?", [quantity, id])
+
+        except db.OperationalError:
+            print('Something is wrong with the db!')
+        except db.ProgrammingError:
+            print('Error running DB query')
+        conn.commit()
+        self.db_disconnect(conn, cursor)
+
+        return True
