@@ -107,4 +107,19 @@ def change_employee():
         return Response('Error adding changing employee', mimetype="plain/text", status=401)
 
 
+@app.delete('/employee')
+def delete_employee():
+    employee_id = None
+    delete_employee = None
+    try:
+        employee_id = request.json['id']
+        delete_employee = db.delete_employee(employee_id)
+    except:
+        return Response('Error deleting employee', mimetype="plain/text", status=401)
+    if(delete_employee):
+        return Response("You have succesfully fired this employee!", mimetype="plain/text", status=200)
+    else:
+        return Response('Error deleting employee', mimetype="plain/text", status=401)
+
+
 app.run(debug=True)

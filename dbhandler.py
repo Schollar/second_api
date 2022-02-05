@@ -116,3 +116,18 @@ class dbInteraction:
         self.db_disconnect(conn, cursor)
 
         return True
+
+    def delete_employee(self, id):
+        conn, cursor = self.db_connect()
+        try:
+            cursor.execute(
+                "DELETE FROM employee WHERE id = ?", [id, ])
+
+        except db.OperationalError:
+            print('Something is wrong with the db!')
+        except db.ProgrammingError:
+            print('Error running DB query')
+        conn.commit()
+        self.db_disconnect(conn, cursor)
+
+        return True
