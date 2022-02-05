@@ -18,4 +18,47 @@ def get_items():
         return Response("Something went wrong getting items from the DB!", mimetype="application/json", status=400)
 
 
+@app.get('/employee')
+def get_employee():
+    try:
+        employee_id = request.args['id']
+        employee = db.get_employee(employee_id)
+        employee_json = json.dumps(employee, default=str)
+    except:
+        return Response("Something went wrong getting items from the DB!", mimetype="application/json", status=400)
+    if(employee):
+        return Response(employee_json, mimetype="application/json", status=200)
+    else:
+        return Response("Something went wrong getting items from the DB!", mimetype="application/json", status=400)
+
+
+@app.post('/item')
+def add_item():
+    try:
+        name = request.json['name']
+        description = request.json['description']
+        quantity = request.json['quantity']
+        new_item = db.add_item(name, description, quantity)
+    except:
+        return Response('Error adding item to DB', mimetype="plain/text", status=401)
+    if(new_item):
+        return Response("You have succesfully added this item to the DB!", mimetype="plain/text", status=200)
+    else:
+        return Response('Error adding item to DB', mimetype="plain/text", status=401)
+
+
+@app.post('/employee')
+def add_employee():
+    try:
+        name = request.json['name']
+        hourly_wage = request.json['hourly_wage']
+        new_employee = db.add_employee(name, hourly_wage)
+    except:
+        return Response('Error adding employee to DB', mimetype="plain/text", status=401)
+    if(new_employee):
+        return Response("You have succesfully added this employee to the DB!", mimetype="plain/text", status=200)
+    else:
+        return Response('Error adding employee to DB', mimetype="plain/text", status=401)
+
+
 app.run(debug=True)

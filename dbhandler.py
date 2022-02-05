@@ -41,3 +41,48 @@ class dbInteraction:
             print('Error running DB query')
         self.db_disconnect(conn, cursor)
         return items
+
+    def get_employee(self, id):
+        employee = []
+        conn, cursor = self.db_connect()
+        try:
+            cursor.execute(
+                "SELECT name, hired_at, hourly_wage FROM employee WHERE id = ?", [id, ])
+            employee = cursor.fetchone()
+        except db.OperationalError:
+            print('Something went  wrong with the db!')
+        except db.ProgrammingError:
+            print('Error running DB query')
+        self.db_disconnect(conn, cursor)
+
+        return True, employee
+
+    def add_item(self, name, description, quantity):
+        conn, cursor = self.db_connect()
+        try:
+            cursor.execute(
+                "INSERT INTO item (name, description, quantity) VALUES (?, ?, ?)", [name, description, quantity])
+
+        except db.OperationalError:
+            print('Something is wrong with the db!')
+        except db.ProgrammingError:
+            print('Error running DB query')
+        conn.commit()
+        self.db_disconnect(conn, cursor)
+
+        return True
+
+    def add_employee(self, name, hourly_wage):
+        conn, cursor = self.db_connect()
+        try:
+            cursor.execute(
+                "INSERT INTO employee (name, hourly_wage) VALUES (?, ?)", [name, hourly_wage])
+
+        except db.OperationalError:
+            print('Something is wrong with the db!')
+        except db.ProgrammingError:
+            print('Error running DB query')
+        conn.commit()
+        self.db_disconnect(conn, cursor)
+
+        return True
