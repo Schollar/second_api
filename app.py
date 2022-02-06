@@ -2,15 +2,16 @@ from flask import Flask, request, Response
 import json
 import dbhandler as dbh
 app = Flask(__name__)
-db = dbh.dbInteraction()
 
 
 @app.get('/item')
 def get_items():
     item_list = []
     items_json = None
+    items_limit = None
     try:
-        item_list = db.get_items()
+        items_limit = request.args['item_limit']
+        item_list = dbh.get_items(items_limit, None)
         items_json = json.dumps(item_list, default=str)
     except:
         return Response("Something went wrong getting items from the DB!", mimetype="application/json", status=400)
@@ -27,7 +28,7 @@ def get_employee():
     employee_json = None
     try:
         employee_id = request.args['id']
-        employee = db.get_employee(employee_id)
+        employee = dbh.get_employee(employee_id)
         employee_json = json.dumps(employee, default=str)
     except:
         return Response("Something went wrong getting employee from the DB!", mimetype="application/json", status=400)
@@ -47,7 +48,7 @@ def add_item():
         name = request.json['name']
         description = request.json['description']
         quantity = request.json['quantity']
-        new_item = db.add_item(name, description, quantity)
+        new_item = dbh.add_item(name, description, quantity)
     except:
         return Response('Error adding item to DB', mimetype="plain/text", status=401)
     if(new_item):
@@ -64,7 +65,7 @@ def add_employee():
     try:
         name = request.json['name']
         hourly_wage = request.json['hourly_wage']
-        new_employee = db.add_employee(name, hourly_wage)
+        new_employee = dbh.add_employee(name, hourly_wage)
     except:
         return Response('Error adding employee to DB', mimetype="plain/text", status=401)
     if(new_employee):
@@ -81,7 +82,7 @@ def change_item():
     try:
         item_id = request.json['id']
         new_quantity = request.json['quantity']
-        change_item = db.change_item(item_id, new_quantity)
+        change_item = dbh.change_item(item_id, new_quantity)
     except:
         return Response('Error adding changing item', mimetype="plain/text", status=401)
     if(change_item):
@@ -98,7 +99,7 @@ def change_employee():
     try:
         employee_id = request.json['id']
         new_wage = request.json['hourly_wage']
-        change_employee = db.change_employee(employee_id, new_wage)
+        change_employee = dbh.change_employee(employee_id, new_wage)
     except:
         return Response('Error adding changing employee', mimetype="plain/text", status=401)
     if(change_employee):
@@ -113,7 +114,7 @@ def delete_employee():
     delete_employee = None
     try:
         employee_id = request.json['id']
-        delete_employee = db.delete_employee(employee_id)
+        delete_employee = dbh.delete_employee(employee_id)
     except:
         return Response('Error deleting employee', mimetype="plain/text", status=401)
     if(delete_employee):
@@ -128,7 +129,7 @@ def delete_item():
     delete_item = None
     try:
         item_id = request.json['id']
-        delete_item = db.delete_item(item_id)
+        delete_item = dbh.delete_item(item_id)
     except:
         return Response('Error deleting item', mimetype="plain/text", status=401)
     if(delete_item):
