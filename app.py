@@ -122,4 +122,19 @@ def delete_employee():
         return Response('Error deleting employee', mimetype="plain/text", status=401)
 
 
+@app.delete('/item')
+def delete_item():
+    item_id = None
+    delete_item = None
+    try:
+        item_id = request.json['id']
+        delete_item = db.delete_item(item_id)
+    except:
+        return Response('Error deleting item', mimetype="plain/text", status=401)
+    if(delete_item):
+        return Response("You have succesfully deleted this item!", mimetype="plain/text", status=200)
+    else:
+        return Response('Error deleting item', mimetype="plain/text", status=401)
+
+
 app.run(debug=True)
