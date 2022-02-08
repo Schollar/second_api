@@ -1,24 +1,30 @@
+from inspect import trace
 from flask import Flask, request, Response
 import json
 import dbhandler as dbh
+import traceback
 app = Flask(__name__)
+
+# GET endpoint that returns the items in the DB
 
 
 @app.get('/item')
 def get_items():
     item_list = []
     items_json = None
-    items_limit = None
     try:
-        items_limit = request.args['item_limit']
-        item_list = dbh.get_items(items_limit, None)
+        limit = request.args.get('limit')
+        item_list = dbh.get_items(limit)
         items_json = json.dumps(item_list, default=str)
     except:
+        traceback.print_exc()
         return Response("Something went wrong getting items from the DB!", mimetype="application/json", status=400)
     if(item_list):
         return Response(items_json, mimetype="application/json", status=200)
     else:
         return Response("Something went wrong getting items from the DB!", mimetype="application/json", status=400)
+
+# GET endpoint that takes in user input and returns the employee in the DB
 
 
 @app.get('/employee')
@@ -36,6 +42,8 @@ def get_employee():
         return Response(employee_json, mimetype="application/json", status=200)
     else:
         return Response("Something went wrong getting employee from the DB!", mimetype="application/json", status=400)
+
+# POST endpoint that takes in user input and adds an  item to the DB
 
 
 @app.post('/item')
@@ -56,6 +64,8 @@ def add_item():
     else:
         return Response('Error adding item to DB', mimetype="plain/text", status=401)
 
+# POST endpoint that takes in user input and adds an employee in the DB
+
 
 @app.post('/employee')
 def add_employee():
@@ -72,6 +82,8 @@ def add_employee():
         return Response("You have succesfully added this employee to the DB!", mimetype="plain/text", status=200)
     else:
         return Response('Error adding employee to DB', mimetype="plain/text", status=401)
+
+# PATCH endpoint that takes in user input and changes an item's quantity in the DB
 
 
 @app.patch('/item')
@@ -90,6 +102,8 @@ def change_item():
     else:
         return Response('Error adding changing item', mimetype="plain/text", status=401)
 
+# PATCH endpoint that takes in user input and changes employee wage
+
 
 @app.patch('/employee')
 def change_employee():
@@ -107,6 +121,8 @@ def change_employee():
     else:
         return Response('Error adding changing employee', mimetype="plain/text", status=401)
 
+# DELETE endpoint that takes in user input and deletes employee from DB
+
 
 @app.delete('/employee')
 def delete_employee():
@@ -121,6 +137,8 @@ def delete_employee():
         return Response("You have succesfully fired this employee!", mimetype="plain/text", status=200)
     else:
         return Response('Error deleting employee', mimetype="plain/text", status=401)
+
+# DELETE endpoint that takes in user input and deletes an item from DB
 
 
 @app.delete('/item')
