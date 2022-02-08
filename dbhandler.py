@@ -34,7 +34,6 @@ def db_disconnect(conn, cursor):
 
 
 def get_items(limit):
-    limit = int(limit)
     items = []
     conn, cursor = db_connect()
     try:
@@ -43,7 +42,7 @@ def get_items(limit):
         if(limit == None):
             items = cursor.fetchall()
         else:
-            items = cursor.fetchmany(limit)
+            items = cursor.fetchmany(int(limit))
     except db.OperationalError:
         print('Something went  wrong with the db!')
     except db.ProgrammingError:

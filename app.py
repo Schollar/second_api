@@ -12,6 +12,7 @@ app = Flask(__name__)
 def get_items():
     item_list = []
     items_json = None
+    limit = None
     try:
         limit = request.args.get('limit')
         item_list = dbh.get_items(limit)
